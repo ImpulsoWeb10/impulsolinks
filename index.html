@@ -20,7 +20,24 @@
 
   <style>
     html, body { min-height: 100%; }
-    body { font-family: 'Outfit', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif; -webkit-tap-highlight-color: transparent;
+      min-height: 100vh; min-height: 100dvh; overflow-x: hidden;
+      /* margem igual em volta da moldura; respeita notch e barra do iPhone */
+      padding: max(.7rem, env(safe-area-inset-top)) .6rem max(.7rem, env(safe-area-inset-bottom));
+    }
+
+    /* ---------- Moldura neon: encaixa na altura da tela (celular, notebook e PC) ---------- */
+    .painel {
+      display: flex; flex-direction: column; align-items: center; width: 100%;
+      min-height: calc(100vh - 1.4rem);
+      min-height: calc(100dvh - max(.7rem, env(safe-area-inset-top)) - max(.7rem, env(safe-area-inset-bottom)));
+      padding: 1.8rem 1.25rem 1.1rem;
+      border: 2px solid var(--neon, #fff); border-radius: 24px;
+      background: rgba(255, 255, 255, .28);
+      box-shadow: 0 0 10px var(--neon, #fff), 0 0 20px var(--neon-80, rgba(255,255,255,.8)),
+                  0 0 30px var(--neon-35, rgba(255,255,255,.35)), 0 15px 35px rgba(30, 20, 80, .25);
+    }
 
     /* ---------- Botões ---------- */
     .link-btn {
@@ -56,7 +73,7 @@
 
 <body class="antialiased">
   <!-- Fundo e conteúdo são montados pelo JavaScript a partir de dadosCliente -->
-  <div id="app" class="min-h-screen w-full flex justify-center"></div>
+  <div id="app" class="w-full flex justify-center"></div>
 
   <script>
     /* =====================================================================
@@ -85,7 +102,8 @@
         corTexto: "#1E1B3A",          // nome, @ e descrição
         corBotao: "#FFFFFF",          // fundo dos botões comuns
         corTextoBotao: "#1E1B3A",     // texto/ícone dos botões comuns
-        corBordaFoto: "rgba(255,255,255,.9)" // borda da foto de perfil
+        corBordaFoto: "rgba(255,255,255,.9)", // borda da foto de perfil
+        corNeon: "#8B5CF6"            // cor da moldura neon (use "#FFFFFF" para branca)
       },
 
       // LINKS (aparecem na ordem da lista)
@@ -169,10 +187,16 @@
       document.body.style.color = t.corTexto;
       document.title = `${d.nome} | Links`;
 
-      // Coluna central: celular = tela cheia, desktop = largura máxima de app
-      const coluna = el('main', 'entrada w-full max-w-md px-5 pt-12 pb-8 flex flex-col items-center min-h-screen');
-      coluna.style.paddingTop = 'max(3rem, env(safe-area-inset-top))';
-      coluna.style.paddingBottom = 'max(2rem, env(safe-area-inset-bottom))';
+      // Moldura neon (cor vem de tema.corNeon)
+      const neon = t.corNeon || '#FFFFFF';
+      const externo = el('main', 'entrada w-full max-w-md');
+      externo.style.setProperty('--neon', neon);
+      externo.style.setProperty('--neon-80', hexParaRgba(neon, .8));
+      externo.style.setProperty('--neon-35', hexParaRgba(neon, .35));
+      const painel = el('div', 'painel');
+
+      // Bloco principal, centralizado na vertical dentro da moldura
+      const coluna = el('div', 'w-full flex flex-col items-center my-auto');
 
       // Foto de perfil circular com borda sutil
       const moldura = el('div', 'w-28 h-28 rounded-full overflow-hidden flex items-center justify-center shadow-lg');
@@ -230,7 +254,7 @@
       coluna.appendChild(lista);
 
       // Rodapé discreto
-      const rodape = el('footer', 'mt-auto pt-12 text-xs opacity-60 text-center');
+      const rodape = el('footer', 'pt-8 text-xs opacity-60 text-center');
       if (d.rodape.url) {
         const r = el('a', 'underline underline-offset-2', d.rodape.texto);
         r.href = d.rodape.url; r.target = '_blank'; r.rel = 'noopener noreferrer';
@@ -238,9 +262,31 @@
       } else {
         rodape.textContent = d.rodape.texto;
       }
-      coluna.appendChild(rodape);
 
-      app.replaceChildren(coluna);
+      painel.append(coluna, rodape);
+      externo.appendChild(painel);
+      app.replaceChildren(externo);
+
+      ajustarMoldura(externo, painel);
+      const refazer = () => ajustarMoldura(externo, painel);
+      window.addEventListener('resize', refazer);
+      window.addEventListener('orientationchange', refazer);
+      window.addEventListener('load', refazer);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(refazer);
+    }
+
+    /* ENCAIXE AUTOMÁTICO: a moldura sempre preenche a altura da tela.
+       Se o conteúdo for maior que a tela (ex.: notebook de tela baixa),
+       reduz proporcionalmente para a moldura inteira caber, sem rolagem. */
+    function ajustarMoldura(externo, painel) {
+      const cs = getComputedStyle(document.body);
+      const disponivel = window.innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      externo.style.zoom = 1;
+      painel.style.minHeight = '0px';
+      const natural = painel.offsetHeight;
+      const z = Math.min(1, Math.max(0.55, disponivel / natural));
+      externo.style.zoom = z;
+      painel.style.minHeight = (disponivel / z) + 'px';
     }
 
     // Converte #RRGGBB em rgba() para o anel do pulso
