@@ -2,44 +2,70 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Painel de Links</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gerador de Links | ImpulsoWeb10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main class="app">
-  <header>
-    <h1>Painel de Links</h1>
-    <p>Preencha os campos e gere sua página de links.</p>
-  </header>
+<header class="top">
+  <div class="brand"><span class="logo">&#128279;</span><div><b>Gerador de Links</b><small>ImpulsoWeb10</small></div></div>
+  <button type="button" class="ghost sm" id="reset">Recomeçar</button>
+</header>
 
-  <div class="grid">
-    <form id="form" class="card" novalidate>
-      <label for="nome">Nome ou título da página</label>
-      <input id="nome" maxlength="60" placeholder="Ex.: Maria Silva" autocomplete="off">
-
-      <label for="bio">Biografia <span class="opt">(opcional)</span></label>
-      <textarea id="bio" rows="3" maxlength="160" placeholder="Uma frase sobre você ou seu negócio"></textarea>
-
-      <label for="foto">Link da foto de perfil</label>
-      <input id="foto" type="url" placeholder="https://site.com/minha-foto.jpg" autocomplete="off">
-
+<div class="wrap">
+  <form id="form" novalidate>
+    <section class="card">
+      <h2><span class="n">1</span>Perfil</h2>
+      <div class="g2">
+        <div><label for="nome">Nome do negócio ou pessoa</label><input id="nome" maxlength="50" placeholder="Padaria Pão Quente" autocomplete="off"></div>
+        <div><label for="usuario">Instagram</label><div class="pre"><span>@</span><input id="usuario" maxlength="40" placeholder="padariapaoquente" autocomplete="off"></div></div>
+      </div>
+      <label for="descricao">Frase curta <span class="opt">(opcional)</span></label>
+      <input id="descricao" maxlength="90" placeholder="Pães fresquinhos todo dia, das 6h às 20h." autocomplete="off">
+      <label for="foto">Link da foto de perfil <span class="opt">(opcional)</span></label>
+      <input id="foto" type="url" placeholder="https://site.com/logo.jpg" autocomplete="off">
+      <p class="help">Sem foto, a página usa as iniciais do nome.</p>
       <label for="slug">URL personalizada</label>
-      <input id="slug" maxlength="40" placeholder="meu-nome" autocomplete="off">
+      <div class="pre"><span>/</span><input id="slug" maxlength="40" placeholder="padaria-pao-quente" autocomplete="off"></div>
+    </section>
 
-      <label>Links</label>
+    <section class="card">
+      <h2><span class="n">2</span>Botões</h2>
+      <p class="help">Os 5 botões já estão prontos. Ajuste o texto, o ícone e cole o link. No WhatsApp e no telefone, basta o número com DDD.</p>
       <div id="links"></div>
-      <button type="button" class="btn ghost" id="add">+ Adicionar link</button>
+      <button type="button" class="ghost" id="add">+ Adicionar botão</button>
+    </section>
 
-      <div class="err" id="erro" role="alert"></div>
-      <button type="submit" class="btn">Gerar Meu Link</button>
-    </form>
+    <section class="card">
+      <h2><span class="n">3</span>Aparência</h2>
+      <label>Tema de cores</label>
+      <div class="swatches" id="temas"></div>
+      <div class="neon"><label for="neon">Cor da moldura neon</label><input type="color" id="neon" value="#8B5CF6"></div>
+    </section>
 
-    <aside class="card" id="saida">
-      <p class="vazio">A prévia da sua página aparece aqui.</p>
-    </aside>
-  </div>
-</main>
+    <div class="err" id="erro" role="alert"></div>
+    <button type="submit" class="primary big">Gerar Meu Link</button>
+  </form>
+
+  <aside class="side">
+    <div class="phone"><iframe id="prev" title="Prévia da página"></iframe></div>
+    <p class="cap">Prévia ao vivo (precisa de internet)</p>
+    <div class="card res" id="res" hidden>
+      <h2>Sua página está pronta</h2>
+      <label for="lnk">Link para compartilhar</label>
+      <div class="copyrow"><input id="lnk" readonly><button type="button" class="ghost" id="cp">Copiar</button></div>
+      <div class="acoes">
+        <a class="ghost btnl" id="ab" target="_blank" rel="noopener">Abrir página</a>
+        <button type="button" class="primary" id="bx">Baixar HTML</button>
+      </div>
+      <p class="help" id="dica"></p>
+    </div>
+  </aside>
+</div>
+<script src="modelo.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
