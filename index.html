@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel de Links</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header>
+    <h1>Painel de Links</h1>
+    <p>Preencha os campos e gere sua página de links.</p>
+  </header>
+
+  <div class="grid">
+    <form id="form" class="card" novalidate>
+      <label for="nome">Nome ou título da página</label>
+      <input id="nome" maxlength="60" placeholder="Ex.: Maria Silva" autocomplete="off">
+
+      <label for="bio">Biografia <span class="opt">(opcional)</span></label>
+      <textarea id="bio" rows="3" maxlength="160" placeholder="Uma frase sobre você ou seu negócio"></textarea>
+
+      <label for="foto">Link da foto de perfil</label>
+      <input id="foto" type="url" placeholder="https://site.com/minha-foto.jpg" autocomplete="off">
+
+      <label for="slug">URL personalizada</label>
+      <input id="slug" maxlength="40" placeholder="meu-nome" autocomplete="off">
+
+      <label>Links</label>
+      <div id="links"></div>
+      <button type="button" class="btn ghost" id="add">+ Adicionar link</button>
+
+      <div class="err" id="erro" role="alert"></div>
+      <button type="submit" class="btn">Gerar Meu Link</button>
+    </form>
+
+    <aside class="card" id="saida">
+      <p class="vazio">A prévia da sua página aparece aqui.</p>
+    </aside>
+  </div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
